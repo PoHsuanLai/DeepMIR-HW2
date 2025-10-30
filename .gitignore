@@ -43,7 +43,6 @@ REPORT_CFG_*.md
 
 # Large data files
 *.zip
-*.pdf
 hface_token.txt
 
 # Documentation
