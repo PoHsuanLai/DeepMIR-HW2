@@ -1,0 +1,52 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.python-version
+
+# Data directories
+home/
+lpmc/
+audio_flamingo/
+coco-mulla-repo/
+
+# Outputs and experiments
+outputs/
+outputs_*/
+
+# Logs
+*.log
+
+# Config files (experiment-specific)
+config_cfg_*.json
+config_qwen2*.json
+config_jasco*.json
+
+# Test files
+test_*.py
+test_*.wav
+test_*.pt
+example_*.py
+example_*.pt
+
+# Reports (auto-generated)
+REPORT_cfg_*.md
+REPORT_CFG_*.md
+
+# Large data files
+*.zip
+*.pdf
+hface_token.txt
+
+# Documentation
+JASCO_MELODY_FORMAT.md
+assets/
+
+# Claude AI
+.claude/
