@@ -661,8 +661,8 @@ class MusicGenerator:
             # Set generation parameters
             self.model.set_generation_params(
                 duration=10.0,  # JASCO generates 10s clips
-                cfg_coef_all=5.0,  # CFG for all conditions
-                cfg_coef_txt=1.0,  # CFG for text only
+                cfg_coef_all=3.0,  # CFG for all conditions (best: equal weighting)
+                cfg_coef_txt=3.0,  # CFG for text only (best: equal weighting)
             )
 
             self.sample_rate = self.model.sample_rate
@@ -804,8 +804,8 @@ class MusicGenerator:
             # Update CFG parameters (JASCO duration is fixed at model initialization)
             # Prioritize melody/chords/drums over text for better Gen↔Target similarity
             self.model.set_generation_params(
-                cfg_coef_all=5.0,  # Strong guidance from melody/chords/drums (default: 5.0)
-                cfg_coef_txt=1.0,   # Moderate text guidance (reduced from 1.5)
+                cfg_coef_all=3.0,  # Equal weighting (best configuration from experiments)
+                cfg_coef_txt=3.0,   # Equal weighting (best configuration from experiments)
             )
 
             # Generate with JASCO

@@ -1,0 +1,7 @@
+{
+  "target_dir": "home/fundwotsai/Deep_MIR_hw2/target_music_list_60s",
+  "reference_dir": "home/fundwotsai/Deep_MIR_hw2/referecne_music_list_60s",
+  "output_dir": "outputs_final",
+  "caption_model": "qwen2-audio-natural",
+  "generators": ["jasco"]
+}

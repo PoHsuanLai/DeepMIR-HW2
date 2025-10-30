@@ -51,94 +51,104 @@ Repository URL: [https://github.com/PoHsuanLai/DeepMIR-HW2.git]
 
 \section{Implementation Details}
 
-\subsection{Model: JASCO}
+\subsection{Model: JASCO (Best Configuration)}
 
 \textbf{Model:} facebook/jasco-chords-drums-melody-1B (1B parameters)
 
-\textbf{Text Input:} LP-MusicCaps (seungheondoh/lp-music-caps) generates captions from target audio in 10-second segments, concatenated into single prompt.
+\textbf{Text Input:} Qwen2-Audio-7B-Instruct (Qwen/Qwen2-Audio-7B-Instruct) generates natural language captions focusing on melodic character, rhythm, and harmonic progression without mentioning specific instruments.
 
 \textbf{Time-Varying Conditions:}
 \begin{itemize}
-    \item \textbf{Chords:} Extracted from bass stem (Demucs htdemucs separation) via librosa chroma\_stft. Format: (chord\_label, timestamp) tuples.
-    \item \textbf{Drums:} Separated drum track via Demucs htdemucs model.
-    \item \textbf{Melody:} Salience matrix (53 bins) placeholder.
+    \item \textbf{Melody:} JASCO melody salience matrix (53 MIDI note bins, 36-88) extracted using basic\_pitch with threshold 0.3 for sparse, salient pitch activations.
+    \item \textbf{Chords:} Extracted from full mix via librosa chroma\_stft with template matching (24 chord types: major/minor). Format: (chord\_label, timestamp) tuples.
+    \item \textbf{Drums:} Separated drum track via Demucs htdemucs model from full mix.
 \end{itemize}
 
-\textbf{Generation Parameters:}
+\textbf{Generation Parameters (Best from CFG Experiments):}
 \begin{itemize}
     \item Duration: 10 seconds (fixed)
     \item Sample rate: 32kHz
-    \item CFG coefficients: $\gamma_{\text{all}}=5.0$, $\gamma_{\text{txt}}=2.5$
+    \item CFG coefficients: $\gamma_{\text{all}}=3.0$, $\gamma_{\text{txt}}=3.0$ (equal weighting)
+    \item Configuration: text\_focused (best balance between target matching and text adherence)
 \end{itemize}
 
-\section{Generated Music}
+\section{Aggregate Evaluation Results}
 
-All generated music files are available at: [YOUR\_GOOGLE\_DRIVE\_LINK]
+\textbf{Note:} Results shown are aggregate metrics from the best configuration (text\_focused: $\gamma_{\text{all}}=3.0$, $\gamma_{\text{txt}}=3.0$) across 9 diverse target files including Western classical (rock, jazz, country) and Chinese traditional music (bamboo flute, piano).
 
-\texttt{outputs/generated/jasco/}
+\subsection{Overall Performance}
 
-\section{Evaluation Results}
+\begin{itemize}
+    \item \textbf{CLAP Gen$\leftrightarrow$Target:} 0.4292 (target audio similarity)
+    \item \textbf{CLAP Text$\leftrightarrow$Gen:} 0.3035 (text adherence)
+    \item \textbf{CLAP Text$\leftrightarrow$Target:} 0.2421 (caption quality baseline)
+    \item \textbf{Melody Accuracy:} 0.3346 (pitch contour and chroma similarity)
+    \item \textbf{Aesthetics CE:} 0.978 (content enjoyment)
+    \item \textbf{Aesthetics PQ:} 1.000 (production quality)
+\end{itemize}
+
+\section{Sample Evaluation Results}
 
 \subsection{6\_rock\_102\_beat\_3-4.wav}
 
 \textbf{Generated File:} \texttt{6\_rock\_102\_beat\_3-4\_generated.wav}
 
-\textbf{Text Input (LP-MusicCaps Caption):}
+\textbf{Text Input (Qwen2-Audio Natural Language Caption):}
 
 \small
-[0s-10s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. The snare is played at different parts of the song. There are no voices in this song. This song can be played in a drum instruction video. [10s-20s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. The snare is played at different parts of the song. The hi-hat is played in a unique pattern. There are no voices in this song. [20s-30s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. The snare is played at different parts of the song. There are no voices in this song. This song can be played in a drum instruction video. [30s-40s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. The snare is played at different parts of the song. The hi-hat is played in a unique pattern. There are no voices in this song. [40s-50s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. The snare is played at different parts of the song. There are no voices in this song. This song can be played in a drum instruction video. [50s-60s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. The hi-hat is played at different parts of the song. There are no voices in this song. This song can be played in a drum instruction video.
+The music has a bouncy and lively feel with a melody that flows smoothly. It maintains a consistent rhythm and beat, moving along at a moderate tempo. There's a sense of brightness to the harmonic progression, giving it an uplifting quality. Overall, the music exudes energy and a vibrant atmosphere.
 \normalsize
 
 \textbf{CLAP Similarity:}
 \begin{itemize}
-    \item Target $\leftrightarrow$ Text: 0.3469
-    \item Text $\leftrightarrow$ Generated: 0.3441
-    \item Generated $\leftrightarrow$ Target: 0.8950
+    \item Target $\leftrightarrow$ Text: -0.0296
+    \item Text $\leftrightarrow$ Generated: 0.1713
+    \item Generated $\leftrightarrow$ Target: 0.6201
 \end{itemize}
 
 \textbf{Meta Audiobox Aesthetics:}
 \begin{itemize}
     \item Target: CE=0.555, CU=0.902, PC=1.000, PQ=1.000
-    \item Generated: CE=0.548, CU=1.000, PC=1.000, PQ=1.000
+    \item Generated: CE=1.000, CU=1.000, PC=1.000, PQ=1.000
 \end{itemize}
 
 \textbf{Melody Accuracy:}
 \begin{itemize}
-    \item Chroma Similarity: 0.7616
-    \item Chroma Accuracy: 0.1044
-    \item Pitch Contour Similarity: 0.4763
-    \item Overall: 0.4131
+    \item Chroma Similarity: 0.7000
+    \item Chroma Accuracy: 0.2227
+    \item Pitch Contour Similarity: 0.3877
+    \item Overall: 0.4154
 \end{itemize}
 
 \subsection{10\_country\_114\_beat\_4-4.wav}
 
 \textbf{Generated File:} \texttt{10\_country\_114\_beat\_4-4\_generated.wav}
 
-\textbf{Text Input (LP-MusicCaps Caption):}
+\textbf{Text Input (Qwen2-Audio Natural Language Caption):}
 
 \small
-[0s-10s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. There are no voices in this song. This song can be played in an instructional video. [10s-20s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. There are no voices in this song. This song can be played in an instructional video. [20s-30s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. There are no voices in this song. This song can be played in an instructional video. [30s-40s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. The hi-hat is played at different parts of the song. There are no voices in this song. This song can be played in an instructional video. [40s-50s] This song features percussion being played at a fast tempo. The beat is of moderate difficulty. The kick is played on the first count of each bar. The hi-hat is played at different parts of the song. There are no voices in this song. This song can be played in an instructional video. [50s-60s] This song features a drum kit being played. A stick count is played in the beginning of the song. The hi-hat, snare and kick are played in this clip. There are no voices in this song. This song can be played in an instructional video.
+The melody is bouncy and lively, with a steady beat that gives it a groovy feel. It's not too high-pitched, making it easy to listen to. The harmony isn't too complex, but it contributes to an uplifting and fun atmosphere. Overall, the song has a cheerful mood and energy level that makes you want to move along with the beat.
 \normalsize
 
 \textbf{CLAP Similarity:}
 \begin{itemize}
-    \item Target $\leftrightarrow$ Text: 0.2530
-    \item Text $\leftrightarrow$ Generated: 0.3218
-    \item Generated $\leftrightarrow$ Target: 0.6556
+    \item Target $\leftrightarrow$ Text: -0.0641
+    \item Text $\leftrightarrow$ Generated: 0.2157
+    \item Generated $\leftrightarrow$ Target: 0.4463
 \end{itemize}
 
 \textbf{Meta Audiobox Aesthetics:}
 \begin{itemize}
     \item Target: CE=0.562, CU=0.631, PC=1.000, PQ=1.000
-    \item Generated: CE=0.678, CU=1.000, PC=1.000, PQ=1.000
+    \item Generated: CE=0.803, CU=1.000, PC=1.000, PQ=1.000
 \end{itemize}
 
 \textbf{Melody Accuracy:}
 \begin{itemize}
-    \item Chroma Similarity: 0.7071
-    \item Chroma Accuracy: 0.1044
-    \item Pitch Contour Similarity: 0.5680
-    \item Overall: 0.4243
+    \item Chroma Similarity: 0.6887
+    \item Chroma Accuracy: 0.1021
+    \item Pitch Contour Similarity: 0.5430
+    \item Overall: 0.4103
 \end{itemize}
 
 \subsection{4\_jazz\_120\_beat\_3-4.wav}
@@ -406,7 +416,7 @@ guidance\_high & 5.0 & 0.1803 & 0.3668 & 0.2637 & 1.000 \\
 \toprule
 Model & Configuration & Gen$\leftrightarrow$Target & Text$\leftrightarrow$Gen & Melody Acc & Aesthetics CE \\
 \midrule
-JASCO & text\_focused (3.0/3.0) & 0.3800 & 0.3339 & 0.3318 & 0.915 \\
+JASCO & text\_focused (3.0/3.0) & 0.4292 & 0.3035 & 0.3346 & 0.978 \\
 MusicGen-Melody & guidance\_medium (3.0) & 0.2146 & 0.2760 & 0.2674 & 1.000 \\
 \bottomrule
 \end{tabular}
@@ -416,7 +426,7 @@ MusicGen-Melody & guidance\_medium (3.0) & 0.2146 & 0.2760 & 0.2674 & 1.000 \\
 
 \textbf{CFG Trade-off:} Equal weighting (3.0/3.0) achieves the best balance, heavy melody guidance (7.0/0.5) degrades target matching while heavy text guidance (2.0/4.0) maintains reasonable performance.
 
-\textbf{JASCO vs MusicGen-Melody:} JASCO outperforms MusicGen-Melody by 77\% on Gen$\leftrightarrow$Target (0.38 vs 0.21), demonstrating that separate CFG controls for melody/chords/drums provide superior controllability over single guidance scale.
+\textbf{JASCO vs MusicGen-Melody:} JASCO outperforms MusicGen-Melody by 100\% on Gen$\leftrightarrow$Target (0.43 vs 0.21), demonstrating that separate CFG controls for melody/chords/drums provide superior controllability over single guidance scale.
 
 \textbf{LP-MusicCaps vs Qwen2-Audio:} Qwen2-Audio generates natural, controllable descriptions focusing on melodic character and rhythm, while LP-MusicCaps produces segment-based technical descriptions with repetitive patterns unsuitable for modern text-to-music models.
 \end{document}
