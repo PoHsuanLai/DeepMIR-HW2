@@ -6,7 +6,7 @@
 \usepackage{graphicx}
 
 \title{HW2: Controllable Text-to-Music Generation}
-\author{Student ID: [YOUR\_ID]}
+\author{Student ID: R13921098}
 \date{}
 
 \begin{document}
@@ -47,7 +47,7 @@ HW2/
 
 \section{Source Code}
 
-Repository URL: [YOUR\_GITHUB\_URL]
+Repository URL: [https://github.com/PoHsuanLai/DeepMIR-HW2.git]
 
 \section{Implementation Details}
 
@@ -368,7 +368,7 @@ All generated music files are available at: [YOUR\_GOOGLE\_DRIVE\_LINK]
 \label{tab:jasco_cfg}
 \begin{tabular}{lcccccc}
 \toprule
-Config & $\gamma_{\text{all}}$ & $\gamma_{\text{txt}}$ & Gen↔Target & Text↔Gen & Melody Acc & Aesthetics CE \\
+Config & $\gamma_{\text{all}}$ & $\gamma_{\text{txt}}$ & Gen$\leftrightarrow$Target & Text$\leftrightarrow$Gen & Melody Acc & Aesthetics CE \\
 \midrule
 text\_focused & 3.0 & 3.0 & 0.3800 & 0.3339 & 0.3318 & 0.915 \\
 text\_heavy & 2.0 & 4.0 & 0.3751 & 0.3163 & 0.3423 & 0.949 \\
@@ -387,7 +387,7 @@ melody\_heavy & 7.0 & 0.5 & 0.3218 & 0.2471 & 0.3445 & 0.979 \\
 \label{tab:musicgen_guidance}
 \begin{tabular}{lccccc}
 \toprule
-Config & Guidance Scale & Gen↔Target & Text↔Gen & Melody Acc & Aesthetics CE \\
+Config & Guidance Scale & Gen$\leftrightarrow$Target & Text$\leftrightarrow$Gen & Melody Acc & Aesthetics CE \\
 \midrule
 guidance\_medium & 3.0 & 0.2146 & 0.2760 & 0.2674 & 1.000 \\
 guidance\_low & 2.0 & 0.2063 & 0.2005 & 0.2625 & 1.000 \\
@@ -404,7 +404,7 @@ guidance\_high & 5.0 & 0.1803 & 0.3668 & 0.2637 & 1.000 \\
 \label{tab:model_comparison}
 \begin{tabular}{lccccc}
 \toprule
-Model & Configuration & Gen↔Target & Text↔Gen & Melody Acc & Aesthetics CE \\
+Model & Configuration & Gen$\leftrightarrow$Target & Text$\leftrightarrow$Gen & Melody Acc & Aesthetics CE \\
 \midrule
 JASCO & text\_focused (3.0/3.0) & 0.3800 & 0.3339 & 0.3318 & 0.915 \\
 MusicGen-Melody & guidance\_medium (3.0) & 0.2146 & 0.2760 & 0.2674 & 1.000 \\
@@ -414,14 +414,9 @@ MusicGen-Melody & guidance\_medium (3.0) & 0.2146 & 0.2760 & 0.2674 & 1.000 \\
 
 \section{Analysis}
 
-\textbf{CFG Trade-off:} Equal weighting (3.0/3.0) achieves the best balance, as heavy melody guidance (7.0/0.5) degrades target matching while heavy text guidance (2.0/4.0) maintains reasonable performance.
+\textbf{CFG Trade-off:} Equal weighting (3.0/3.0) achieves the best balance, heavy melody guidance (7.0/0.5) degrades target matching while heavy text guidance (2.0/4.0) maintains reasonable performance.
 
-\textbf{JASCO vs MusicGen-Melody:} JASCO outperforms MusicGen-Melody by 77\% on Gen↔Target (0.38 vs 0.21), demonstrating that separate CFG controls for melody/chords/drums provide superior controllability over single guidance scale.
+\textbf{JASCO vs MusicGen-Melody:} JASCO outperforms MusicGen-Melody by 77\% on Gen$\leftrightarrow$Target (0.38 vs 0.21), demonstrating that separate CFG controls for melody/chords/drums provide superior controllability over single guidance scale.
 
 \textbf{LP-MusicCaps vs Qwen2-Audio:} Qwen2-Audio generates natural, controllable descriptions focusing on melodic character and rhythm, while LP-MusicCaps produces segment-based technical descriptions with repetitive patterns unsuitable for modern text-to-music models.
-
-\section{Thoughts}
-
-JASCO performs well on percussion-focused tracks (rock, jazz, country) with Generated↔Target CLAP scores above 0.54. For melodic instruments (piano, bamboo flute), scores are lower, particularly for complex pieces like IRIS OUT (0.1138). Aesthetics scores are consistently high (PQ=1.0 for all generated outputs). Melody accuracy varies significantly (0.20-0.42), with better preservation on simpler rhythmic patterns.
-
 \end{document}

@@ -1,3 +1,5 @@
+report_methods.tex
+
 # Python-generated files
 __pycache__/
 *.py[oc]
@@ -50,3 +52,8 @@ assets/
 
 # Claude AI
 .claude/
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
